@@ -9,7 +9,7 @@ SOURCES := $(shell find  . -name '*.go')
 all: $(BIN)
 
 $(BIN): $(SOURCES)
-	go build -o $(BIN) main.go
+	GO111MODULE=on go build 
 
 clean:
 	rm -f $(BIN)
