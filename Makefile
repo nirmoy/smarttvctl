@@ -1,11 +1,15 @@
-GO=go
-all= $(BINARIES)
-BINARIES: vol
+SHELL := /usr/bin/env bash
+CWD := $(shell pwd)
+BIN := smarttvctl 
+
+SOURCES := $(shell find  . -name '*.go')
+
+.PHONY: clean
+
+all: $(BIN)
+
+$(BIN): $(SOURCES)
+	go build -o $(BIN) main.go
 
 clean:
-	$(GO) clean
-	rm -f $(BINARIES)
-
-vol: vol.go
-	$(GO) build -o volume vol.go
-
+	rm -f $(BIN)
