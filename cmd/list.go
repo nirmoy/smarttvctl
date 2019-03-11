@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/huin/goupnp"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -24,9 +26,14 @@ var listCmd = &cobra.Command{
 		}
 
 		fmt.Println("Discovered:")
-		for key, val := range deviceList {
-			fmt.Println(key, val)
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"Name", "URL"})
+
+		for _, val := range deviceList {
+			table.Append(val)
 		}
+
+		table.Render()
 	},
 }
 
