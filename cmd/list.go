@@ -10,6 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	allDevices bool
+)
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
@@ -19,9 +22,17 @@ var listCmd = &cobra.Command{
 		deviceList := map[string][]string{}
 		allService, _ := goupnp.DiscoverDevices("ssdp:all")
 		for _, service := range allService {
-			if strings.Contains(service.Location.String(), "dmr") {
-				deviceList[service.Root.Device.Manufacturer] =
-					[]string{service.Root.Device.Manufacturer, service.Location.String()}
+			if service.Root == nil {
+				continue
+			}
+			if !allDevices {
+				if strings.Contains(service.Location.String(), "dmr") {
+					deviceList[service.Location.String()] =
+						[]string{service.Root.Device.Manufacturer, service.Location.String()}
+				}
+			} else {
+				deviceList[service.Location.String()] =
+					[]string{service.Root.Device.FriendlyName, service.Location.String()}
 			}
 		}
 
@@ -39,4 +50,5 @@ var listCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(listCmd)
+	listCmd.Flags().BoolVarP(&allDevices, "all", "a", false, "List all devices")
 }
